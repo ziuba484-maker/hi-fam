@@ -1,182 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hi Friend</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hi Friend</title>
 
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      background: linear-gradient(to right, #ffecd2, #fcb69f);
-    }
+<style>
+body {
+  font-family: Arial;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  margin:0;
+  background: linear-gradient(to right, #ffecd2, #fcb69f);
+}
 
-    h1 {
-      color: #333;
-      margin-bottom: 20px;
-    }
+.card {
+  display:none;
+  background:white;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  text-align:center;
+  animation:fadeIn .5s;
+}
 
-    .card {
-      display: none;
-      padding: 25px;
-      border-radius: 15px;
-      background: white;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      text-align: center;
-      max-width: 350px;
-      animation: fadeIn 0.6s ease;
-    }
+button {
+  padding:10px 18px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
 
-    input {
-      width: 80%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
+.btn-main { background:#ff6f61; color:white; }
+.btn-yes { background:green; color:white; }
+.btn-no { background:red; color:white; }
 
-    button {
-      padding: 10px 18px;
-      margin: 8px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 15px;
-      transition: 0.3s;
-    }
+canvas {
+  position:fixed;
+  top:0;
+  left:0;
+  pointer-events:none;
+}
 
-    .btn-main {
-      background: #ff6f61;
-      color: white;
-    }
-
-    .btn-main:hover {
-      background: #e65b50;
-      transform: scale(1.05);
-    }
-
-    .btn-yes {
-      background: #4CAF50;
-      color: white;
-    }
-
-    .btn-no {
-      background: #f44336;
-      color: white;
-    }
-
-    .btn-yes:hover, .btn-no:hover {
-      transform: scale(1.05);
-    }
-
-    .error {
-      color: red;
-      font-size: 13px;
-      display: none;
-    }
-
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(-15px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
-  </style>
+@keyframes fadeIn {
+  from{opacity:0; transform:translateY(-10px);}
+  to{opacity:1;}
+}
+</style>
 </head>
 
 <body>
 
-<h1>Welcome 👋</h1>
+<canvas id="confetti"></canvas>
 
-<!-- STEP 1 -->
+<h2>Welcome 👋</h2>
+
 <div class="card" id="popup">
-  <p>Hi fam! What's your nickname and phone number?</p>
-
-  <input type="text" id="nickname" placeholder="Your nickname">
-  <input type="text" id="phone" placeholder="Phone number">
-
-  <p class="error" id="errorMsg">Enter valid details!</p>
-
-  <button class="btn-main" onclick="submitForm()">Submit</button>
+  <p>Nickname & phone</p>
+  <input id="name" placeholder="Name"><br>
+  <input id="phone" placeholder="Phone"><br>
+  <button class="btn-main" onclick="saveUser()">Submit</button>
 </div>
 
-<!-- STEP 2 -->
-<div class="card" id="welcome">
-  <h2 id="welcomeText"></h2>
-  <button class="btn-main" onclick="nextStep()">Continue</button>
-</div>
-
-<!-- STEP 3 -->
 <div class="card" id="question">
-  <p><b>Hi fam! My name is TX 🤗</b></p>
-  <p>Will you like to be my friend?</p>
-
-  <button class="btn-yes" onclick="answerYes()">Yes 💖</button>
-  <button class="btn-no" onclick="answerNo()">No 💔</button>
+  <p>Hi fam! I'm TX 🤗</p>
+  <p>Will you be my friend?</p>
+  <button class="btn-yes" onclick="yes()">Yes 💖</button>
+  <button class="btn-no" onclick="no()">No 💔</button>
 </div>
 
-<!-- FINAL MESSAGE -->
-<div class="card" id="finalMessage">
-  <h2 id="finalText"></h2>
+<div class="card" id="result">
+  <h3 id="msg"></h3>
 </div>
 
-<button class="btn-main" id="openBtn" onclick="openPopup()">Click me!</button>
+<button class="btn-main" id="startBtn" onclick="start()">Start</button>
+
+<audio id="soundYes" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 
 <script>
-const popup = document.getElementById('popup');
-const welcome = document.getElementById('welcome');
-const question = document.getElementById('question');
-const finalMessage = document.getElementById('finalMessage');
+const popup = document.getElementById("popup");
+const question = document.getElementById("question");
+const result = document.getElementById("result");
+const msg = document.getElementById("msg");
 
-const welcomeText = document.getElementById('welcomeText');
-const finalText = document.getElementById('finalText');
-
-const openBtn = document.getElementById('openBtn');
-const errorMsg = document.getElementById('errorMsg');
-
-function openPopup() {
-  popup.style.display = 'block';
-  openBtn.style.display = 'none';
+function start(){
+  let user = localStorage.getItem("user");
+  if(user){
+    question.style.display="block";
+  }else{
+    popup.style.display="block";
+  }
+  document.getElementById("startBtn").style.display="none";
 }
 
-function submitForm() {
-  const name = document.getElementById('nickname').value.trim();
-  const phone = document.getElementById('phone').value.trim();
+function saveUser(){
+  let name = document.getElementById("name").value;
+  let phone = document.getElementById("phone").value;
 
-  if (name === '' || phone === '' || phone.length < 10 || isNaN(phone)) {
-    errorMsg.style.display = 'block';
-    return;
+  if(name=="" || phone.length<10) return alert("Invalid");
+
+  localStorage.setItem("user", JSON.stringify({name, phone}));
+
+  popup.style.display="none";
+  question.style.display="block";
+}
+
+function yes(){
+  document.getElementById("soundYes").play();
+  question.style.display="none";
+  result.style.display="block";
+  msg.innerText="🥰 TX is so happy! Welcome friend 🎉";
+
+  launchConfetti();
+}
+
+function no(){
+  question.style.display="none";
+  result.style.display="block";
+  msg.innerText="😢 TX is sad... but still wishes you happiness 💔";
+}
+
+/* SIMPLE CONFETTI */
+function launchConfetti(){
+  const canvas = document.getElementById("confetti");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let pieces = [];
+
+  for(let i=0;i<100;i++){
+    pieces.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      size: Math.random()*5+2,
+      speed: Math.random()*3+1
+    });
   }
 
-  errorMsg.style.display = 'none';
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      ctx.fillRect(p.x,p.y,p.size,p.size);
+      p.y += p.speed;
+      if(p.y>canvas.height) p.y=0;
+    });
+    requestAnimationFrame(draw);
+  }
 
-  popup.style.display = 'none';
-  welcome.style.display = 'block';
-
-  welcomeText.innerText = `Welcome ${name}! 🎉 Your phone ${phone} is noted.`;
-}
-
-function nextStep() {
-  welcome.style.display = 'none';
-  question.style.display = 'block';
-}
-
-function answerYes() {
-  question.style.display = 'none';
-  finalMessage.style.display = 'block';
-
-  finalText.innerText = "Awww 🥰 I'm so happy you said YES! Welcome to my world of friendship 💖🎉";
-}
-
-function answerNo() {
-  question.style.display = 'none';
-  finalMessage.style.display = 'block';
-
-  finalText.innerText = "Oh no 😢 that hurts... but it's okay 💔 TX will still wish you happiness always.";
+  draw();
 }
 </script>
 
