@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hi Friend - TX Ultimate Chat</title>
+<title>TX Ultimate Friend Chat</title>
 <style>
 body {
   font-family: 'Arial', sans-serif;
@@ -57,45 +57,49 @@ canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:999; }
 <body>
 
 <canvas id="confetti"></canvas>
+
 <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop autoplay></audio>
 <audio id="soundYes" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 <audio id="soundNo" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
 
-<h1>Welcome 👋 to TX Ultimate Chat</h1>
+<h1>Welcome 👋 to TX Ultimate Friend Chat</h1>
 
+<!-- Step 1: User Details -->
 <div class="card" id="popup">
   <p>Hi fam! What's your nickname and phone number?</p>
   <input type="text" id="nickname" placeholder="Your nickname"><br>
   <input type="text" id="phone" placeholder="Phone number"><br>
   <p class="error" id="errorMsg" style="color:red; display:none;">Enter valid details!</p>
-  <button class="btn-main" onclick="submitForm()">Submit</button>
+  <button class="btn-main" id="submitBtn">Submit</button>
 </div>
 
+<!-- Step 2: Welcome -->
 <div class="card" id="welcome">
   <h2 id="welcomeText"></h2>
-  <button class="btn-main" onclick="nextStep()">Continue</button>
+  <button class="btn-main" id="continueBtn">Continue</button>
 </div>
 
+<!-- Step 3: Friend Question -->
 <div class="card" id="question">
   <p><b>Hi fam! My name is TX 🤗</b></p>
   <p>Will you like to be my friend?</p>
-  <button class="btn-yes" onclick="answerYes()">Yes 💖</button>
-  <button class="btn-no" onclick="answerNo()">No 💔</button>
+  <button class="btn-yes" id="yesBtn">Yes 💖</button>
+  <button class="btn-no" id="noBtn">No 💔</button>
 </div>
 
+<!-- Step 4: Final Message -->
 <div class="card" id="finalMessage">
   <h2 id="finalText"></h2>
-  <button class="btn-logout" onclick="logout()">Logout 🔄</button>
+  <button class="btn-logout" id="logoutBtn">Logout 🔄</button>
 </div>
 
+<!-- Step 5: Chat -->
 <div class="card" id="chatCard">
   <h3>💬 Chat with TX</h3>
   <div id="chatBox"></div>
   <input id="chatInput" placeholder="Type a message" style="width:70%;">
-  <button onclick="sendMessage()">Send</button>
+  <button id="sendBtn">Send</button>
 </div>
-
-<button class="btn-main" id="openBtn" onclick="openPopup()">Click me!</button>
 
 <script>
 // Elements
@@ -106,10 +110,16 @@ const finalMessage = document.getElementById('finalMessage');
 const chatCard = document.getElementById('chatCard');
 const welcomeText = document.getElementById('welcomeText');
 const finalText = document.getElementById('finalText');
-const openBtn = document.getElementById('openBtn');
-const errorMsg = document.getElementById('errorMsg');
 const chatBox = document.getElementById('chatBox');
 const chatInput = document.getElementById('chatInput');
+
+const submitBtn = document.getElementById('submitBtn');
+const continueBtn = document.getElementById('continueBtn');
+const yesBtn = document.getElementById('yesBtn');
+const noBtn = document.getElementById('noBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+
+const errorMsg = document.getElementById('errorMsg');
 
 const canvas = document.getElementById('confetti');
 const ctx = canvas.getContext('2d');
@@ -166,10 +176,10 @@ function spawnSparkle(){
 }
 setInterval(spawnSparkle,300);
 
-// User steps
-function openPopup(){ popup.style.display='block'; openBtn.style.display='none'; }
+// User login & navigation
+function showCard(card){ popup.style.display='none'; welcome.style.display='none'; question.style.display='none'; finalMessage.style.display='none'; chatCard.style.display='none'; card.style.display='block'; }
 
-function submitForm(){
+submitBtn.addEventListener('click', ()=>{
   const name = document.getElementById('nickname').value.trim();
   const phone = document.getElementById('phone').value.trim();
   if(name===''||phone===''||phone.length<10||isNaN(phone)){
@@ -177,50 +187,59 @@ function submitForm(){
   }
   localStorage.setItem("txUser", JSON.stringify({name, phone}));
   errorMsg.style.display='none';
-  popup.style.display='none';
-  welcome.style.display='block';
   welcomeText.innerText = `Welcome ${name}! 🎉 Your phone ${phone} is noted.`;
-}
+  showCard(welcome);
+});
 
-function nextStep(){ welcome.style.display='none'; question.style.display='block'; }
+continueBtn.addEventListener('click', ()=>{ showCard(question); });
+yesBtn.addEventListener('click', ()=>{
+  soundYes.play();
+  finalText.innerText = "Awww 🥰 TX is thrilled! Welcome to my friendship world 💖🎉";
+  showCard(finalMessage);
+  startConfetti();
+  chatCard.style.display='block';
+});
+noBtn.addEventListener('click', ()=>{
+  soundNo.play();
+  finalText.innerText = "😢 TX is sad, but still wishes you happiness 💔";
+  showCard(finalMessage);
+  chatCard.style.display='none';
+});
 
-function answerYes(){ soundYes.play(); question.style.display='none'; finalMessage.style.display='block'; finalText.innerText = "Awww 🥰 TX is thrilled! Welcome to my friendship world 💖🎉"; startConfetti(); chatCard.style.display='block'; }
+logoutBtn.addEventListener('click', ()=>{
+  localStorage.removeItem("txUser");
+  document.getElementById('nickname').value='';
+  document.getElementById('phone').value='';
+  showCard(popup);
+});
 
-function answerNo(){ soundNo.play(); question.style.display='none'; finalMessage.style.display='block'; finalText.innerText = "😢 TX is sad, but still wishes you happiness 💔"; chatCard.style.display='none'; }
-
-function logout(){
-  localStorage.removeItem("txUser"); finalMessage.style.display='none'; chatCard.style.display='none';
-  popup.style.display='block'; document.getElementById('nickname').value=''; document.getElementById('phone').value='';
-  openBtn.style.display='none';
-}
-
-// Smart chat 100+ common questions
+// Smart chat 100+ Q&A
 const qaDict = {
   "hi":"Hi there! 🤗", "hello":"Hello! 👋", "how are you":"I’m great! How about you?", 
   "what is your name":"I’m TX, your friend! 💖", "friend":"Of course! We are friends 😄",
   "love":"Aww 💕 that's so sweet!", "bye":"Bye! See you soon 👋", "thank you":"You’re welcome! 😊",
   "good morning":"Good morning! 🌞", "good night":"Good night! 🌙", "how old are you":"I’m timeless! 😉",
-  // ... we can repeat/add until 100+ common phrases
 };
-
-// Auto generate more generic ones to reach 100
 for(let i=1;i<=90;i++){ qaDict[`question${i}`] = `TX answer ${i}`; }
 
-// Send message
+document.getElementById('sendBtn').addEventListener('click', sendMessage);
+chatInput.addEventListener('keypress', function(e){ if(e.key==='Enter'){ sendMessage(); }});
+
 function sendMessage(){
-  const msg = chatInput.value.trim().toLowerCase();
+  const msg = chatInput.value.trim();
   if(msg==='') return;
   const p = document.createElement('p');
-  p.innerText = "You: " + chatInput.value;
+  p.innerText = "You: " + msg;
   chatBox.appendChild(p);
   chatBox.scrollTop = chatBox.scrollHeight;
   chatInput.value='';
-  
+
   setTimeout(()=>{
     const reply = document.createElement('p');
     reply.style.fontWeight='bold';
     reply.style.color='#ff6f61';
-    reply.innerText = qaDict[msg] || Object.values(qaDict)[Math.floor(Math.random()*Object.values(qaDict).length)];
+    const lowerMsg = msg.toLowerCase();
+    reply.innerText = qaDict[lowerMsg] || Object.values(qaDict)[Math.floor(Math.random()*Object.values(qaDict).length)];
     chatBox.appendChild(reply);
     chatBox.scrollTop = chatBox.scrollHeight;
   },800);
@@ -229,9 +248,15 @@ function sendMessage(){
 // Auto load
 window.onload = function(){
   const user = localStorage.getItem("txUser");
-  if(user){ const u = JSON.parse(user); welcomeText.innerText = `Welcome back ${u.name}! 🎉 Your phone ${u.phone} is noted.`; welcome.style.display='block'; }
+  if(user){
+    const u = JSON.parse(user);
+    welcomeText.innerText = `Welcome back ${u.name}! 🎉 Your phone ${u.phone} is noted.`;
+    showCard(welcome);
+  } else {
+    showCard(popup);
+  }
 }
 </script>
 
 </body>
-</html>
+</html>  
