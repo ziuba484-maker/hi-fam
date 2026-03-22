@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TX Ultimate Friend Chat</title>
+<title>TX Pro AI Friend Chat</title>
 <style>
 body {
   font-family: 'Arial', sans-serif;
@@ -26,7 +26,7 @@ h1 { color:#333; margin-bottom:20px; animation: slideIn 1s ease forwards; text-a
   border-radius:20px;
   box-shadow:0 15px 30px rgba(0,0,0,0.25);
   text-align:center;
-  max-width:380px;
+  max-width:400px;
   animation: fadeInUp 0.6s ease forwards;
   position:relative;
 }
@@ -50,8 +50,9 @@ canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:999; }
 .sparkle { position:absolute; font-size:16px; animation: floatUp linear infinite; pointer-events:none; }
 @keyframes floatUp { 0% {transform: translateY(0) rotate(0deg); opacity:1;} 100% {transform: translateY(-700px) rotate(360deg); opacity:0;} }
 
-#chatBox { height:200px; overflow:auto; border:1px solid #ccc; padding:5px; margin-bottom:10px; text-align:left; }
+#chatBox { height:250px; overflow:auto; border:1px solid #ccc; padding:10px; margin-bottom:10px; text-align:left; }
 #chatBox p { margin:3px 0; }
+.typing { color:#aaa; font-style:italic; font-size:13px; }
 </style>
 </head>
 <body>
@@ -62,9 +63,9 @@ canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:999; }
 <audio id="soundYes" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 <audio id="soundNo" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
 
-<h1>Welcome 👋 to TX Ultimate Friend Chat</h1>
+<h1>Welcome 👋 to TX AI Chat</h1>
 
-<!-- Step 1: User Details -->
+<!-- User Details -->
 <div class="card" id="popup">
   <p>Hi fam! What's your nickname and phone number?</p>
   <input type="text" id="nickname" placeholder="Your nickname"><br>
@@ -73,13 +74,13 @@ canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:999; }
   <button class="btn-main" id="submitBtn">Submit</button>
 </div>
 
-<!-- Step 2: Welcome -->
+<!-- Welcome -->
 <div class="card" id="welcome">
   <h2 id="welcomeText"></h2>
   <button class="btn-main" id="continueBtn">Continue</button>
 </div>
 
-<!-- Step 3: Friend Question -->
+<!-- Friend question -->
 <div class="card" id="question">
   <p><b>Hi fam! My name is TX 🤗</b></p>
   <p>Will you like to be my friend?</p>
@@ -87,15 +88,15 @@ canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:999; }
   <button class="btn-no" id="noBtn">No 💔</button>
 </div>
 
-<!-- Step 4: Final Message -->
+<!-- Final message -->
 <div class="card" id="finalMessage">
   <h2 id="finalText"></h2>
   <button class="btn-logout" id="logoutBtn">Logout 🔄</button>
 </div>
 
-<!-- Step 5: Chat -->
+<!-- Chat -->
 <div class="card" id="chatCard">
-  <h3>💬 Chat with TX</h3>
+  <h3>💬 Chat with TX AI</h3>
   <div id="chatBox"></div>
   <input id="chatInput" placeholder="Type a message" style="width:70%;">
   <button id="sendBtn">Send</button>
@@ -176,10 +177,10 @@ function spawnSparkle(){
 }
 setInterval(spawnSparkle,300);
 
-// Show only one card
+// Show one card
 function showCard(card){ popup.style.display='none'; welcome.style.display='none'; question.style.display='none'; finalMessage.style.display='none'; chatCard.style.display='none'; card.style.display='block'; }
 
-// Login submit
+// Login
 submitBtn.addEventListener('click', ()=>{
   const name = document.getElementById('nickname').value.trim();
   const phone = document.getElementById('phone').value.trim();
@@ -192,10 +193,8 @@ submitBtn.addEventListener('click', ()=>{
   showCard(welcome);
 });
 
-// Continue to friend question
-continueBtn.addEventListener('click', ()=>{ showCard(question); });
-
 // Friend question
+continueBtn.addEventListener('click', ()=>{ showCard(question); });
 yesBtn.addEventListener('click', ()=>{
   soundYes.play();
   finalText.innerText = "Awww 🥰 TX is thrilled! Welcome to my friendship world 💖🎉";
@@ -218,56 +217,74 @@ logoutBtn.addEventListener('click', ()=>{
   showCard(popup);
 });
 
-// Smart chat
+// ===================== PRO AI CHAT =====================
 const qaDict = {
-  "hi":"Hi there! 🤗",
-  "hello":"Hello! 👋",
-  "how are you":"I’m great! How about you?",
-  "what is your name":"I’m TX, your friend! 💖",
-  "friend":"Of course! We are friends 😄",
-  "love":"Aww 💕 that's so sweet!",
-  "bye":"Bye! See you soon 👋",
-  "thank you":"You’re welcome! 😊",
-  "good morning":"Good morning! 🌞",
-  "good night":"Good night! 🌙",
-  "how old are you":"I’m timeless! 😉",
+  "hi":["Hi there! 🤗","Hello! 👋"],
+  "hello":["Hello! 👋","Hi! How are you?"],
+  "how are you":["I’m great! How about you?","Feeling awesome! 😄"],
+  "i love you":["Aww 💕 TX loves you too!","That's so sweet! 💖"],
+  "i am sad":["Oh no 😢 TX is here for you!","Sending hugs 🤗"],
+  "friend":["Of course! We are friends 😄","Yay! Welcome! 🎉"],
+  "thank you":["You’re welcome! 😊","Anytime! 😄"],
+  "good morning":["Good morning! 🌞 Have a lovely day!"],
+  "good night":["Good night! 🌙 Sweet dreams!"],
+  "bye":["Bye! See you soon 👋","Take care! 💖"]
 };
-
-// Add more generic 90 questions
-for(let i=1;i<=90;i++){ qaDict[`question${i}`] = `TX answer ${i}`; }
-
-document.getElementById('sendBtn').addEventListener('click', sendMessage);
-chatInput.addEventListener('keypress', function(e){ if(e.key==='Enter'){ sendMessage(); }});
+// Add generic 90 questions fallback
+for(let i=1;i<=90;i++){ qaDict[`question${i}`] = [`TX answer ${i}`]; }
 
 function sendMessage(){
   const msgRaw = chatInput.value.trim();
   if(msgRaw==='') return;
-  const msg = msgRaw.toLowerCase().replace(/[^\w\s]/gi,''); // normalize
+  const msg = msgRaw.toLowerCase().replace(/[^\w\s]/gi,'');
   const p = document.createElement('p');
   p.innerText = "You: " + msgRaw;
   chatBox.appendChild(p);
   chatBox.scrollTop = chatBox.scrollHeight;
   chatInput.value='';
 
+  const typing = document.createElement('p');
+  typing.classList.add('typing');
+  typing.innerText = "TX is typing...";
+  chatBox.appendChild(typing);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
   setTimeout(()=>{
+    typing.remove();
     const reply = document.createElement('p');
     reply.style.fontWeight='bold';
     reply.style.color='#ff6f61';
 
     if(qaDict[msg]){
-      reply.innerText = `TX: ${qaDict[msg]}`;
+      const arr = qaDict[msg];
+      reply.innerText = "TX: " + arr[Math.floor(Math.random()*arr.length)];
     } else {
-      // fallback from only predefined keys, exclude question1-90
-      const fallbackKeys = Object.keys(qaDict).filter(k=>!k.startsWith('question'));
-      const randKey = fallbackKeys[Math.floor(Math.random()*fallbackKeys.length)];
-      reply.innerText = `TX: ${qaDict[randKey]}`;
+      // Fallback: search keywords
+      let found=false;
+      const keywords = Object.keys(qaDict);
+      for(let k of keywords){
+        if(msg.includes(k)){
+          const arr = qaDict[k];
+          reply.innerText = "TX: " + arr[Math.floor(Math.random()*arr.length)];
+          found=true; break;
+        }
+      }
+      if(!found){
+        const fallbackKeys = Object.keys(qaDict).filter(k=>!k.startsWith('question'));
+        const randKey = fallbackKeys[Math.floor(Math.random()*fallbackKeys.length)];
+        const arr = qaDict[randKey];
+        reply.innerText = "TX: " + arr[Math.floor(Math.random()*arr.length)];
+      }
     }
     chatBox.appendChild(reply);
     chatBox.scrollTop = chatBox.scrollHeight;
-  },800);
+  },1000 + Math.random()*800);
 }
 
-// Auto load existing user
+document.getElementById('sendBtn').addEventListener('click', sendMessage);
+chatInput.addEventListener('keypress', function(e){ if(e.key==='Enter'){ sendMessage(); }});
+
+// Auto load
 window.onload = function(){
   const user = localStorage.getItem("txUser");
   if(user){
@@ -278,7 +295,19 @@ window.onload = function(){
     showCard(popup);
   }
 }
-</script>
 
+// Sparkles waka waka
+const sparkleChars = ['✨','💖','🌸','🎉','💫','🔥','💌'];
+function spawnSparkle(){
+  const sparkle = document.createElement('div');
+  sparkle.classList.add('sparkle');
+  sparkle.style.left = Math.random()*window.innerWidth+'px';
+  sparkle.style.fontSize = (Math.random()*24+16)+'px';
+  sparkle.innerText = sparkleChars[Math.floor(Math.random()*sparkleChars.length)];
+  document.body.appendChild(sparkle);
+  setTimeout(()=>{sparkle.remove()},4000+Math.random()*2000);
+}
+setInterval(spawnSparkle,300);
+</script>
 </body>
 </html>
