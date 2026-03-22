@@ -1,15 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hi Friend</title>
-  <script>
-    window.onload = function() {
-      alert("Hi fam!, my name is TX would you like to be my friend?");
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      color: #333;
     }
-  </script>
+    .popup {
+      display: none;
+      padding: 20px;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .popup button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .popup button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-  <h2>Welcome 👋</h2>
-  <p>Click anywhere if you like!</p>
+
+  <h1>Welcome 👋</h1>
+  <div class="popup" id="popup">
+    <p>Hi fam!, my name is TX. Would you like to be my friend?</p>
+    <button onclick="closePopup()">Close</button>
+  </div>
+  <button onclick="showPopup()">Click me!</button>
+
+  <script>
+    const popup = document.getElementById('popup');
+    function showPopup() {
+      popup.style.display = 'block';
+    }
+    function closePopup() {
+      popup.style.display = 'none';
+    }
+  </script>
+
 </body>
 </html>
