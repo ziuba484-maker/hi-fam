@@ -95,7 +95,7 @@ canvas {
 }
 @keyframes floatUp {
   0% {transform: translateY(0) rotate(0deg); opacity:1;}
-  100% {transform: translateY(-600px) rotate(360deg); opacity:0;}
+  100% {transform: translateY(-700px) rotate(360deg); opacity:0;}
 }
 </style>
 </head>
@@ -103,6 +103,8 @@ canvas {
 
 <canvas id="confetti"></canvas>
 <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop autoplay></audio>
+<audio id="soundYes" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+<audio id="soundNo" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
 
 <h1>Welcome 👋 to TX's World</h1>
 
@@ -135,6 +137,14 @@ canvas {
   <button class="btn-logout" onclick="logout()">Logout 🔄</button>
 </div>
 
+<!-- MINI CHAT -->
+<div class="card" id="chatCard">
+  <h3>💬 Chat with TX</h3>
+  <div id="chatBox" style="height:150px; overflow:auto; border:1px solid #ccc; padding:5px; margin-bottom:10px;"></div>
+  <input id="chatInput" placeholder="Type a message" style="width:70%;">
+  <button onclick="sendMessage()">Send</button>
+</div>
+
 <button class="btn-main" id="openBtn" onclick="openPopup()">Click me!</button>
 
 <script>
@@ -151,6 +161,14 @@ const canvas = document.getElementById('confetti');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+
+const bgMusic = document.getElementById('bgMusic');
+const soundYes = document.getElementById('soundYes');
+const soundNo = document.getElementById('soundNo');
+
+const chatCard = document.getElementById('chatCard');
+const chatBox = document.getElementById('chatBox');
+const chatInput = document.getElementById('chatInput');
 
 // Confetti
 let confettiParticles = [];
@@ -177,7 +195,6 @@ function drawConfetti(){
     ctx.lineTo(p.x, p.y+p.size);
     ctx.closePath();
     ctx.fill();
-
     p.y += p.speedY;
     p.x += p.speedX;
     if(p.y>canvas.height){p.y=0; p.x=Math.random()*canvas.width;}
@@ -192,18 +209,18 @@ function startConfetti(){
   drawConfetti();
 }
 
-// Sparkle emojis
-const sparkleChars = ['✨','💖','🌸','🎉','💫'];
+// Sparkles waka waka
+const sparkleChars = ['✨','💖','🌸','🎉','💫','🔥','💌'];
 function spawnSparkle(){
   const sparkle = document.createElement('div');
   sparkle.classList.add('sparkle');
   sparkle.style.left = Math.random()*window.innerWidth+'px';
-  sparkle.style.fontSize = (Math.random()*24+12)+'px';
+  sparkle.style.fontSize = (Math.random()*24+16)+'px';
   sparkle.innerText = sparkleChars[Math.floor(Math.random()*sparkleChars.length)];
   document.body.appendChild(sparkle);
   setTimeout(()=>{sparkle.remove()},4000 + Math.random()*2000);
 }
-setInterval(spawnSparkle, 500);
+setInterval(spawnSparkle, 300);
 
 // Functions
 function openPopup(){
@@ -234,25 +251,49 @@ function nextStep(){
 }
 
 function answerYes(){
+  soundYes.play();
   question.style.display='none';
   finalMessage.style.display='block';
   finalText.innerText = "Awww 🥰 TX is thrilled! Welcome to my friendship world 💖🎉";
   startConfetti();
+  chatCard.style.display='block';
 }
 
 function answerNo(){
+  soundNo.play();
   question.style.display='none';
   finalMessage.style.display='block';
   finalText.innerText = "😢 TX is sad, but still wishes you happiness 💔";
+  chatCard.style.display='none';
 }
 
 function logout(){
   localStorage.removeItem("txUser");
   finalMessage.style.display='none';
+  chatCard.style.display='none';
   popup.style.display='block';
   document.getElementById('nickname').value='';
   document.getElementById('phone').value='';
   openBtn.style.display='none';
+}
+
+// Mini chat frontend
+function sendMessage(){
+  const msg = chatInput.value.trim();
+  if(msg==='') return;
+  const p = document.createElement('p');
+  p.innerText = "You: " + msg;
+  chatBox.appendChild(p);
+  chatBox.scrollTop = chatBox.scrollHeight;
+  chatInput.value = '';
+
+  // TX auto reply
+  setTimeout(()=>{
+    const p2 = document.createElement('p');
+    p2.innerText = "TX: 🤗 That's nice!";
+    chatBox.appendChild(p2);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  },1000);
 }
 
 // Auto load if user exists
