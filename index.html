@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TX Pro AI Friend Chat</title>
+<title>TX Pro AI Chat</title>
 <style>
 body {
   font-family: 'Arial', sans-serif;
@@ -13,46 +13,27 @@ body {
   justify-content:center;
   min-height:100vh;
   margin:0;
-  background: linear-gradient(135deg, #ffecd2, #fcb69f);
+  background: linear-gradient(135deg,#ffecd2,#fcb69f);
   overflow:hidden;
 }
-
-h1 { color:#333; margin-bottom:20px; animation: slideIn 1s ease forwards; text-align:center; }
-
-.card {
-  display:none;
-  background:white;
-  padding:25px;
-  border-radius:20px;
-  box-shadow:0 15px 30px rgba(0,0,0,0.25);
-  text-align:center;
-  max-width:400px;
-  animation: fadeInUp 0.6s ease forwards;
-  position:relative;
-}
-
-input { width:80%; padding:10px; margin:8px 0; border-radius:8px; border:1px solid #ccc; font-size:14px; transition: all 0.3s; }
-input:focus { border-color: #ff6f61; box-shadow:0 0 10px rgba(255,111,97,0.5); outline:none; }
-
-button { padding:10px 20px; margin:8px 5px; border:none; border-radius:12px; cursor:pointer; font-size:16px; transition: all 0.3s; }
-button:hover { transform: scale(1.1); box-shadow:0 0 20px rgba(255,111,97,0.8); }
-
-.btn-main { background:#ff6f61; color:white; }
-.btn-yes { background:#4CAF50; color:white; }
-.btn-no { background:#f44336; color:white; }
-.btn-logout { background:#333; color:white; }
-
-canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:999; }
-
-@keyframes fadeInUp { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
-@keyframes slideIn { from {opacity:0; transform:translateY(-30px);} to {opacity:1; transform:translateY(0);} }
-
-.sparkle { position:absolute; font-size:16px; animation: floatUp linear infinite; pointer-events:none; }
-@keyframes floatUp { 0% {transform: translateY(0) rotate(0deg); opacity:1;} 100% {transform: translateY(-700px) rotate(360deg); opacity:0;} }
-
-#chatBox { height:250px; overflow:auto; border:1px solid #ccc; padding:10px; margin-bottom:10px; text-align:left; }
-#chatBox p { margin:3px 0; }
-.typing { color:#aaa; font-style:italic; font-size:13px; }
+h1 {color:#333;margin-bottom:20px;text-align:center;animation:slideIn 1s ease forwards;}
+.card {display:none;background:white;padding:25px;border-radius:20px;box-shadow:0 15px 30px rgba(0,0,0,0.25);text-align:center;max-width:400px;animation:fadeInUp 0.6s ease forwards;position:relative;}
+input {width:80%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;font-size:14px;transition: all 0.3s;}
+input:focus {border-color:#ff6f61;box-shadow:0 0 10px rgba(255,111,97,0.5);outline:none;}
+button {padding:10px 20px;margin:8px 5px;border:none;border-radius:12px;cursor:pointer;font-size:16px;transition: all 0.3s;}
+button:hover {transform:scale(1.1);box-shadow:0 0 20px rgba(255,111,97,0.8);}
+.btn-main {background:#ff6f61;color:white;}
+.btn-yes {background:#4CAF50;color:white;}
+.btn-no {background:#f44336;color:white;}
+.btn-logout {background:#333;color:white;}
+canvas {position:fixed;top:0;left:0;pointer-events:none;z-index:999;}
+@keyframes fadeInUp {from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideIn {from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:translateY(0);}}
+.sparkle {position:absolute;font-size:16px;animation:floatUp linear infinite;pointer-events:none;}
+@keyframes floatUp {0%{transform: translateY(0) rotate(0deg);opacity:1;}100%{transform: translateY(-700px) rotate(360deg);opacity:0;}}
+#chatBox {height:250px;overflow:auto;border:1px solid #ccc;padding:10px;margin-bottom:10px;text-align:left;}
+#chatBox p {margin:3px 0;}
+.typing {color:#aaa;font-style:italic;font-size:13px;}
 </style>
 </head>
 <body>
@@ -65,7 +46,7 @@ canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:999; }
 
 <h1>Welcome 👋 to TX AI Chat</h1>
 
-<!-- User Details -->
+<!-- Step 1: User Details -->
 <div class="card" id="popup">
   <p>Hi fam! What's your nickname and phone number?</p>
   <input type="text" id="nickname" placeholder="Your nickname"><br>
@@ -74,13 +55,13 @@ canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:999; }
   <button class="btn-main" id="submitBtn">Submit</button>
 </div>
 
-<!-- Welcome -->
+<!-- Step 2: Welcome -->
 <div class="card" id="welcome">
   <h2 id="welcomeText"></h2>
   <button class="btn-main" id="continueBtn">Continue</button>
 </div>
 
-<!-- Friend question -->
+<!-- Step 3: Friend Question -->
 <div class="card" id="question">
   <p><b>Hi fam! My name is TX 🤗</b></p>
   <p>Will you like to be my friend?</p>
@@ -88,13 +69,13 @@ canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:999; }
   <button class="btn-no" id="noBtn">No 💔</button>
 </div>
 
-<!-- Final message -->
+<!-- Step 4: Final Message -->
 <div class="card" id="finalMessage">
   <h2 id="finalText"></h2>
   <button class="btn-logout" id="logoutBtn">Logout 🔄</button>
 </div>
 
-<!-- Chat -->
+<!-- Step 5: Chat -->
 <div class="card" id="chatCard">
   <h3>💬 Chat with TX AI</h3>
   <div id="chatBox"></div>
@@ -104,121 +85,79 @@ canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:999; }
 
 <script>
 // Elements
-const popup = document.getElementById('popup');
-const welcome = document.getElementById('welcome');
-const question = document.getElementById('question');
-const finalMessage = document.getElementById('finalMessage');
-const chatCard = document.getElementById('chatCard');
-const welcomeText = document.getElementById('welcomeText');
-const finalText = document.getElementById('finalText');
-const chatBox = document.getElementById('chatBox');
-const chatInput = document.getElementById('chatInput');
-
-const submitBtn = document.getElementById('submitBtn');
-const continueBtn = document.getElementById('continueBtn');
-const yesBtn = document.getElementById('yesBtn');
-const noBtn = document.getElementById('noBtn');
-const logoutBtn = document.getElementById('logoutBtn');
-
-const errorMsg = document.getElementById('errorMsg');
-
-const canvas = document.getElementById('confetti');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const bgMusic = document.getElementById('bgMusic');
-const soundYes = document.getElementById('soundYes');
-const soundNo = document.getElementById('soundNo');
+const popup=document.getElementById('popup');
+const welcome=document.getElementById('welcome');
+const question=document.getElementById('question');
+const finalMessage=document.getElementById('finalMessage');
+const chatCard=document.getElementById('chatCard');
+const welcomeText=document.getElementById('welcomeText');
+const finalText=document.getElementById('finalText');
+const chatBox=document.getElementById('chatBox');
+const chatInput=document.getElementById('chatInput');
+const submitBtn=document.getElementById('submitBtn');
+const continueBtn=document.getElementById('continueBtn');
+const yesBtn=document.getElementById('yesBtn');
+const noBtn=document.getElementById('noBtn');
+const logoutBtn=document.getElementById('logoutBtn');
+const errorMsg=document.getElementById('errorMsg');
+const canvas=document.getElementById('confetti');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const bgMusic=document.getElementById('bgMusic');
+const soundYes=document.getElementById('soundYes');
+const soundNo=document.getElementById('soundNo');
 
 // Confetti
-let confettiParticles = [];
-function createConfetti() {
-  for(let i=0;i<150;i++){
-    confettiParticles.push({
-      x: Math.random()*canvas.width,
-      y: Math.random()*canvas.height,
-      size: Math.random()*7+3,
-      speedY: Math.random()*3+1,
-      speedX: (Math.random()-0.5)*2,
-      color: `hsl(${Math.random()*360}, 70%, 60%)`,
-      tilt: Math.random()*10
-    });
-  }
-}
-function drawConfetti(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  confettiParticles.forEach(p=>{
-    ctx.fillStyle=p.color;
-    ctx.beginPath();
-    ctx.moveTo(p.x,p.y);
-    ctx.lineTo(p.x+p.tilt,p.y+p.size);
-    ctx.lineTo(p.x,p.y+p.size);
-    ctx.closePath();
-    ctx.fill();
-    p.y+=p.speedY; p.x+=p.speedX;
-    if(p.y>canvas.height){p.y=0;p.x=Math.random()*canvas.width;}
-    if(p.x>canvas.width)p.x=0;if(p.x<0)p.x=canvas.width;
-  });
-  requestAnimationFrame(drawConfetti);
-}
-function startConfetti(){ confettiParticles=[]; createConfetti(); drawConfetti(); }
+let confettiParticles=[];
+function createConfetti(){for(let i=0;i<150;i++){confettiParticles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*7+3,speedY:Math.random()*3+1,speedX:(Math.random()-0.5)*2,color:`hsl(${Math.random()*360},70%,60%)`,tilt:Math.random()*10});}}
+function drawConfetti(){ctx.clearRect(0,0,canvas.width,canvas.height);confettiParticles.forEach(p=>{ctx.fillStyle=p.color;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+p.tilt,p.y+p.size);ctx.lineTo(p.x,p.y+p.size);ctx.closePath();ctx.fill();p.y+=p.speedY;p.x+=p.speedX;if(p.y>canvas.height){p.y=0;p.x=Math.random()*canvas.width;}if(p.x>canvas.width)p.x=0;if(p.x<0)p.x=canvas.width;});requestAnimationFrame(drawConfetti);}
+function startConfetti(){confettiParticles=[];createConfetti();drawConfetti();}
 
-// Sparkles waka waka
-const sparkleChars = ['✨','💖','🌸','🎉','💫','🔥','💌'];
-function spawnSparkle(){
-  const sparkle = document.createElement('div');
-  sparkle.classList.add('sparkle');
-  sparkle.style.left = Math.random()*window.innerWidth+'px';
-  sparkle.style.fontSize = (Math.random()*24+16)+'px';
-  sparkle.innerText = sparkleChars[Math.floor(Math.random()*sparkleChars.length)];
-  document.body.appendChild(sparkle);
-  setTimeout(()=>{sparkle.remove()},4000+Math.random()*2000);
-}
+// Sparkles
+const sparkleChars=['✨','💖','🌸','🎉','💫','🔥','💌'];
+function spawnSparkle(){const sparkle=document.createElement('div');sparkle.classList.add('sparkle');sparkle.style.left=Math.random()*window.innerWidth+'px';sparkle.style.fontSize=(Math.random()*24+16)+'px';sparkle.innerText=sparkleChars[Math.floor(Math.random()*sparkleChars.length)];document.body.appendChild(sparkle);setTimeout(()=>{sparkle.remove()},4000+Math.random()*2000);}
 setInterval(spawnSparkle,300);
 
-// Show one card
-function showCard(card){ popup.style.display='none'; welcome.style.display='none'; question.style.display='none'; finalMessage.style.display='none'; chatCard.style.display='none'; card.style.display='block'; }
+// Show card
+function showCard(card){popup.style.display='none';welcome.style.display='none';question.style.display='none';finalMessage.style.display='none';chatCard.style.display='none';card.style.display='block';}
 
 // Login
-submitBtn.addEventListener('click', ()=>{
-  const name = document.getElementById('nickname').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  if(name===''||phone===''||phone.length<10||isNaN(phone)){
-    errorMsg.style.display='block'; return;
-  }
-  localStorage.setItem("txUser", JSON.stringify({name, phone}));
+submitBtn.addEventListener('click',()=>{
+  const name=document.getElementById('nickname').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  if(name===''||phone===''||phone.length<10||isNaN(phone)){errorMsg.style.display='block';return;}
+  localStorage.setItem("txUser",JSON.stringify({name,phone}));
   errorMsg.style.display='none';
-  welcomeText.innerText = `Welcome ${name}! 🎉 Your phone ${phone} is noted.`;
+  welcomeText.innerText=`Welcome ${name}! 🎉 Your phone ${phone} is noted.`;
   showCard(welcome);
 });
 
 // Friend question
-continueBtn.addEventListener('click', ()=>{ showCard(question); });
-yesBtn.addEventListener('click', ()=>{
+continueBtn.addEventListener('click',()=>{showCard(question);});
+yesBtn.addEventListener('click',()=>{
   soundYes.play();
-  finalText.innerText = "Awww 🥰 TX is thrilled! Welcome to my friendship world 💖🎉";
+  finalText.innerText="Awww 🥰 TX is thrilled! Welcome to my friendship world 💖🎉";
   showCard(finalMessage);
   startConfetti();
   chatCard.style.display='block';
 });
-noBtn.addEventListener('click', ()=>{
+noBtn.addEventListener('click',()=>{
   soundNo.play();
-  finalText.innerText = "😢 TX is sad, but still wishes you happiness 💔";
+  finalText="😢 TX is sad, but still wishes you happiness 💔";
   showCard(finalMessage);
   chatCard.style.display='none';
 });
 
 // Logout
-logoutBtn.addEventListener('click', ()=>{
+logoutBtn.addEventListener('click',()=>{
   localStorage.removeItem("txUser");
   document.getElementById('nickname').value='';
   document.getElementById('phone').value='';
   showCard(popup);
 });
 
-// ===================== PRO AI CHAT =====================
-const qaDict = {
+// AI Chat
+const qaDict={
   "hi":["Hi there! 🤗","Hello! 👋"],
   "hello":["Hello! 👋","Hi! How are you?"],
   "how are you":["I’m great! How about you?","Feeling awesome! 😄"],
@@ -230,84 +169,47 @@ const qaDict = {
   "good night":["Good night! 🌙 Sweet dreams!"],
   "bye":["Bye! See you soon 👋","Take care! 💖"]
 };
-// Add generic 90 questions fallback
-for(let i=1;i<=90;i++){ qaDict[`question${i}`] = [`TX answer ${i}`]; }
+for(let i=1;i<=90;i++){qaDict[`question${i}`]=[`TX answer ${i}`];}
 
 function sendMessage(){
-  const msgRaw = chatInput.value.trim();
-  if(msgRaw==='') return;
-  const msg = msgRaw.toLowerCase().replace(/[^\w\s]/gi,'');
-  const p = document.createElement('p');
-  p.innerText = "You: " + msgRaw;
-  chatBox.appendChild(p);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  const msgRaw=chatInput.value.trim();
+  if(msgRaw==='')return;
+  const msg=msgRaw.toLowerCase().replace(/[^\w\s]/gi,'');
+  const p=document.createElement('p');
+  p.innerText="You: "+msgRaw;
+  chatBox.appendChild(p); chatBox.scrollTop=chatBox.scrollHeight;
   chatInput.value='';
 
-  const typing = document.createElement('p');
+  const typing=document.createElement('p');
   typing.classList.add('typing');
-  typing.innerText = "TX is typing...";
-  chatBox.appendChild(typing);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  typing.innerText="TX is typing...";
+  chatBox.appendChild(typing); chatBox.scrollTop=chatBox.scrollHeight;
 
   setTimeout(()=>{
     typing.remove();
-    const reply = document.createElement('p');
-    reply.style.fontWeight='bold';
-    reply.style.color='#ff6f61';
-
+    const reply=document.createElement('p'); reply.style.fontWeight='bold'; reply.style.color='#ff6f61';
     if(qaDict[msg]){
-      const arr = qaDict[msg];
-      reply.innerText = "TX: " + arr[Math.floor(Math.random()*arr.length)];
-    } else {
-      // Fallback: search keywords
+      const arr=qaDict[msg];
+      reply.innerText="TX: "+arr[Math.floor(Math.random()*arr.length)];
+    }else{
       let found=false;
-      const keywords = Object.keys(qaDict);
-      for(let k of keywords){
-        if(msg.includes(k)){
-          const arr = qaDict[k];
-          reply.innerText = "TX: " + arr[Math.floor(Math.random()*arr.length)];
-          found=true; break;
-        }
-      }
-      if(!found){
-        const fallbackKeys = Object.keys(qaDict).filter(k=>!k.startsWith('question'));
-        const randKey = fallbackKeys[Math.floor(Math.random()*fallbackKeys.length)];
-        const arr = qaDict[randKey];
-        reply.innerText = "TX: " + arr[Math.floor(Math.random()*arr.length)];
-      }
+      const keywords=Object.keys(qaDict);
+      for(let k of keywords){if(msg.includes(k)){const arr=qaDict[k];reply.innerText="TX: "+arr[Math.floor(Math.random()*arr.length)];found=true;break;}}
+      if(!found){const fallbackKeys=Object.keys(qaDict).filter(k=>!k.startsWith('question'));const randKey=fallbackKeys[Math.floor(Math.random()*fallbackKeys.length)];const arr=qaDict[randKey];reply.innerText="TX: "+arr[Math.floor(Math.random()*arr.length)];}
     }
-    chatBox.appendChild(reply);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  },1000 + Math.random()*800);
+    chatBox.appendChild(reply); chatBox.scrollTop=chatBox.scrollHeight;
+  },1000+Math.random()*800);
 }
 
-document.getElementById('sendBtn').addEventListener('click', sendMessage);
-chatInput.addEventListener('keypress', function(e){ if(e.key==='Enter'){ sendMessage(); }});
+document.getElementById('sendBtn').addEventListener('click',sendMessage);
+chatInput.addEventListener('keypress',function(e){if(e.key==='Enter'){sendMessage();}});
 
 // Auto load
-window.onload = function(){
-  const user = localStorage.getItem("txUser");
-  if(user){
-    const u = JSON.parse(user);
-    welcomeText.innerText = `Welcome back ${u.name}! 🎉 Your phone ${u.phone} is noted.`;
-    showCard(welcome);
-  } else {
-    showCard(popup);
-  }
+window.onload=function(){
+  const user=localStorage.getItem("txUser");
+  if(user){const u=JSON.parse(user);welcomeText.innerText=`Welcome back ${u.name}! 🎉 Your phone ${u.phone} is noted.`;showCard(welcome);}
+  else showCard(popup);
 }
-
-// Sparkles waka waka
-const sparkleChars = ['✨','💖','🌸','🎉','💫','🔥','💌'];
-function spawnSparkle(){
-  const sparkle = document.createElement('div');
-  sparkle.classList.add('sparkle');
-  sparkle.style.left = Math.random()*window.innerWidth+'px';
-  sparkle.style.fontSize = (Math.random()*24+16)+'px';
-  sparkle.innerText = sparkleChars[Math.floor(Math.random()*sparkleChars.length)];
-  document.body.appendChild(sparkle);
-  setTimeout(()=>{sparkle.remove()},4000+Math.random()*2000);
-}
-setInterval(spawnSparkle,300);
 </script>
 </body>
 </html>
