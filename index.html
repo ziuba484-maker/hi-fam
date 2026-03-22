@@ -17,7 +17,7 @@ body {
   overflow:hidden;
 }
 
-h1 { color:#333; margin-bottom:20px; animation: slideIn 1s ease forwards; }
+h1 { color:#333; margin-bottom:20px; animation: slideIn 1s ease forwards; text-align:center; }
 
 .card {
   display:none;
@@ -176,9 +176,10 @@ function spawnSparkle(){
 }
 setInterval(spawnSparkle,300);
 
-// User login & navigation
+// Show only one card
 function showCard(card){ popup.style.display='none'; welcome.style.display='none'; question.style.display='none'; finalMessage.style.display='none'; chatCard.style.display='none'; card.style.display='block'; }
 
+// Login submit
 submitBtn.addEventListener('click', ()=>{
   const name = document.getElementById('nickname').value.trim();
   const phone = document.getElementById('phone').value.trim();
@@ -191,7 +192,10 @@ submitBtn.addEventListener('click', ()=>{
   showCard(welcome);
 });
 
+// Continue to friend question
 continueBtn.addEventListener('click', ()=>{ showCard(question); });
+
+// Friend question
 yesBtn.addEventListener('click', ()=>{
   soundYes.play();
   finalText.innerText = "Awww 🥰 TX is thrilled! Welcome to my friendship world 💖🎉";
@@ -206,6 +210,7 @@ noBtn.addEventListener('click', ()=>{
   chatCard.style.display='none';
 });
 
+// Logout
 logoutBtn.addEventListener('click', ()=>{
   localStorage.removeItem("txUser");
   document.getElementById('nickname').value='';
@@ -213,23 +218,33 @@ logoutBtn.addEventListener('click', ()=>{
   showCard(popup);
 });
 
-// Smart chat 100+ Q&A
+// Smart chat
 const qaDict = {
-  "hi":"Hi there! 🤗", "hello":"Hello! 👋", "how are you":"I’m great! How about you?", 
-  "what is your name":"I’m TX, your friend! 💖", "friend":"Of course! We are friends 😄",
-  "love":"Aww 💕 that's so sweet!", "bye":"Bye! See you soon 👋", "thank you":"You’re welcome! 😊",
-  "good morning":"Good morning! 🌞", "good night":"Good night! 🌙", "how old are you":"I’m timeless! 😉",
+  "hi":"Hi there! 🤗",
+  "hello":"Hello! 👋",
+  "how are you":"I’m great! How about you?",
+  "what is your name":"I’m TX, your friend! 💖",
+  "friend":"Of course! We are friends 😄",
+  "love":"Aww 💕 that's so sweet!",
+  "bye":"Bye! See you soon 👋",
+  "thank you":"You’re welcome! 😊",
+  "good morning":"Good morning! 🌞",
+  "good night":"Good night! 🌙",
+  "how old are you":"I’m timeless! 😉",
 };
+
+// Add more generic 90 questions
 for(let i=1;i<=90;i++){ qaDict[`question${i}`] = `TX answer ${i}`; }
 
 document.getElementById('sendBtn').addEventListener('click', sendMessage);
 chatInput.addEventListener('keypress', function(e){ if(e.key==='Enter'){ sendMessage(); }});
 
 function sendMessage(){
-  const msg = chatInput.value.trim();
-  if(msg==='') return;
+  const msgRaw = chatInput.value.trim();
+  if(msgRaw==='') return;
+  const msg = msgRaw.toLowerCase().replace(/[^\w\s]/gi,''); // normalize
   const p = document.createElement('p');
-  p.innerText = "You: " + msg;
+  p.innerText = "You: " + msgRaw;
   chatBox.appendChild(p);
   chatBox.scrollTop = chatBox.scrollHeight;
   chatInput.value='';
@@ -238,14 +253,21 @@ function sendMessage(){
     const reply = document.createElement('p');
     reply.style.fontWeight='bold';
     reply.style.color='#ff6f61';
-    const lowerMsg = msg.toLowerCase();
-    reply.innerText = qaDict[lowerMsg] || Object.values(qaDict)[Math.floor(Math.random()*Object.values(qaDict).length)];
+
+    if(qaDict[msg]){
+      reply.innerText = `TX: ${qaDict[msg]}`;
+    } else {
+      // fallback from only predefined keys, exclude question1-90
+      const fallbackKeys = Object.keys(qaDict).filter(k=>!k.startsWith('question'));
+      const randKey = fallbackKeys[Math.floor(Math.random()*fallbackKeys.length)];
+      reply.innerText = `TX: ${qaDict[randKey]}`;
+    }
     chatBox.appendChild(reply);
     chatBox.scrollTop = chatBox.scrollHeight;
   },800);
 }
 
-// Auto load
+// Auto load existing user
 window.onload = function(){
   const user = localStorage.getItem("txUser");
   if(user){
@@ -259,4 +281,4 @@ window.onload = function(){
 </script>
 
 </body>
-</html>  
+</html>
